@@ -23,13 +23,23 @@ async def on_ready():
 async def on_message(message):
     message.content = message.content.lower()
 
-    gameing = await client.fetch_guild(698997198221738067)
-    test_server = await client.fetch_guild(1065705816105160704)
-
     if client.user == message.author:
         return
 
+    if message.content.startswith("spongefy"):
+        l = list(message.content)
+        for i in range(0,8):
+            del l[i]
+        print(l)
 
 
+words = "beeueyeye"
+
+
+def spongefy(words):
+    x = list(words)
+    print(x)
+
+spongefy(words)
 
 client.run(TOKEN)
