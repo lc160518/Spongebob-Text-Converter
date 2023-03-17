@@ -5,8 +5,8 @@ import discord
 from dotenv import load_dotenv
 
 intents = discord.Intents.default()
-intents.typing = False
-intents.presences = False
+intents.typing = True
+intents.presences = True
 intents.message_content = True
 
 load_dotenv()
@@ -26,20 +26,38 @@ async def on_message(message):
     if client.user == message.author:
         return
 
-    if message.content.startswith("spongefy"):
+    if message.content.startswith("!sb"):
         l = list(message.content)
-        for i in range(0,8):
-            del l[i]
-        print(l)
+        world_list = remove_prefix(l)
+
+        b = spongeefy(world_list)
+        await message.channel.send(listToString(b))
+
+        if not isinstance(message.channel, discord.DMChannel):
+            await message.delete()
 
 
-words = "beeueyeye"
+def remove_prefix(prefix):
+    for i in range(0, 4):
+        prefix.remove(prefix[0])
+    return (prefix)
 
 
-def spongefy(words):
-    x = list(words)
-    print(x)
+def spongeefy(words):
+    counter = 1
 
-spongefy(words)
+    while counter <= (len(words) - 1):
+        words[counter] = words[counter].upper()
+        counter += 2
+    return (words)
+
+
+def listToString(words):
+    # initialize an empty string
+    str1 = ""
+
+    # return string
+    return (str1.join(words))
+
 
 client.run(TOKEN)
