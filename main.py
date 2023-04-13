@@ -14,6 +14,8 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = discord.Client(intents=intents)
 
+r = []
+
 
 @client.event
 async def on_ready():
@@ -44,19 +46,21 @@ async def on_message(message):
             await message.delete()
 
     if message.content.startswith("ratio") and message.content.endswith("ratio"):
-        await message.channel.send(f"+ {pickratio(message, r)}")
+        await message.channel.send(f"+ {pickratio(r)}")
 
     if message.content.startswith("!suggest"):
-        julian = await client.fetch_user(398769543482179585)
-        await julian.send(message.content)
+        chanl = await client.fetch_channel(1087686894017576960)
+        await chanl.send(remove_suggest(message))
 
     if message.content.startswith("!list"):
         await message.channel.send(f"{r}")
 
     if message.content.startswith("!add") and message.author in users:
-        r = get_list(message)
         r.append(remove_suggest(message))
-        await message.channel.send(f"added")
+        await message.channel.send(f"{remove_suggest(message)} added")
+
+    if message.content.startswith("!setlist") and message.author.id == 398769543482179585:
+        r = remove_suggest(message)
 
 
 def remove_prefix(prefix):
@@ -84,16 +88,24 @@ def listToString(words):
 
 def remove_suggest(m):
     g = list(m.content)
-    for i in range(0, 5):
-        g.remove(g[0])
+    if m.content.startswith("!add"):
+        for i in range(0, 5):
+            g.remove(g[0])
+    if m.content.startswith("!suggest"):
+        for i in range(0, 8):
+            g.remove(g[0])
+        if m.content.startswith("!setlist"):
+            for i in range(0, 8):
+                g.remove(g[0])
+
     return listToString(g)
 
-def get_list(m):
-    return ["bozo", "touch grass", "go outside", "get real", "we do a little trolling", "counter ratio", "10.20.11.123",
-         "boom beach lvl 100", f"common {m.author.name} W", "gangnam style", "¿Donde esta la biblioteca?"]
 
-def pickratio(m, r):
-    x = random.randrange(len(r))
+def pickratio(r):
+    if len(r) != 0:
+        x = random.randrange(len(r))
+    else:
+        return "no"
     return r[x]
 
 
